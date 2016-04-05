@@ -136,11 +136,7 @@ class Lita::Wizard
   class << self
 
     def start(robot, message, meta = {})
-      if pending_wizard?(message.user.id)
-        message.reply "I cannot handle this command as I'm already expecting a reply from you. " \
-          "You can abort the previous question by messaging me directly 'abort'."
-        return false
-      end
+      return false if pending_wizard?(message.user.id)
       wizard = new(robot, message, 'meta' => meta)
       wizard.advance
       true
