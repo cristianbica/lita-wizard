@@ -34,6 +34,7 @@ class Lita::Wizard
   def handle_message
     if message.body == "abort"
       send_message "Aborting. Resume your normal operations"
+      abort_wizard
       destroy
     elsif step.nil?
       send_message "Some error occured. Aborting."
@@ -124,6 +125,9 @@ class Lita::Wizard
 
   def final_message
     "You're done!"
+  end
+
+  def abort_wizard
   end
 
   def finish_wizard
