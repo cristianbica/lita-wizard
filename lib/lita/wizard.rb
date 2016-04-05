@@ -2,14 +2,16 @@ require 'ostruct'
 
 class Lita::Wizard
 
-  attr_accessor :id, :message, :user_id, :current_step_index, :values
+  attr_accessor :id, :robot, :message, :user_id, :current_step_index, :values, :meta
 
-  def initialize(message, data = {})
+  def initialize(robot, message, data = {})
     @id = data['id'] || SecureRandom.hex(3)
+    @robot = robot
     @message = message
     @user_id = message.user.id
     @current_step_index = (data['current_step_index'] || -1).to_i
     @values = data['values'] || []
+    @meta = data['meta']
   end
 
   def advance
@@ -21,7 +23,9 @@ class Lita::Wizard
       destroy
     elsif run_current_step?
       send_message initial_message if current_step_index == 0
-      send_message step[:label]
+      message = step[:label]
+      message =  "#{message} (Write done when finished)" if step[:multiline]
+      send_message message
     else
       advance
     end
@@ -34,10 +38,21 @@ class Lita::Wizard
     elsif step.nil?
       send_message "Some error occured. Aborting."
       destroy
-    elsif valid_response?
-      values[current_step_index] = message.body
+    elsif message.body == "done" && step[:multiline]
       save
       advance
+    elsif valid_response?
+      if step[:multiline]
+        values[current_step_index] ||= ""
+        values[current_step_index] << "\n"
+        values[current_step_index] << message.body
+        values[current_step_index].strip!
+        save
+      else
+        values[current_step_index] = message.body
+        save
+        advance
+      end
     else
       send_message @error_message
     end
@@ -61,7 +76,8 @@ class Lita::Wizard
       'id' => id,
       'user_id' => user_id,
       'current_step_index' => current_step_index,
-      'values' => values
+      'values' => values,
+      'meta' => meta
     }
   end
 
@@ -119,18 +135,20 @@ class Lita::Wizard
 
   class << self
 
-    def start(message)
-      Lita.logger.debug "Starting wizard for user #{message.user.id} with message #{message.body}"
-      wizard = new(message)
+    def start(robot, message, meta = {})
+      if pending_wizard?(message.user.id)
+        message.reply "I cannot handle this command as I'm already expecting a reply from you. " \
+          "You can abort the previous question by messaging me directly 'abort'."
+        return false
+      end
+      wizard = new(robot, message, 'meta' => meta)
       wizard.advance
+      true
     end
 
-    def handle_message(message)
-      Lita.logger.debug "Trying to continue wizard for user #{message.user.id} with message #{message.body}"
+    def handle_message(robot, message)
       return false unless pending_wizard?(message.user.id)
-      Lita.logger.debug "User has a pending wizard. Restoring ..."
-      wizard = restore(message)
-      Lita.logger.debug "Restored: #{wizard.inspect}"
+      wizard = restore(robot, message)
       if wizard
         wizard.handle_message
         return true
@@ -141,7 +159,7 @@ class Lita::Wizard
     def restore(message)
       data = MultiJson.load(Lita.redis["pending-wizard-#{message.user.id.downcase}"])
       klass = data['class'].safe_constantize
-      klass.new(message, data)
+      klass.new(robot, message, data)
     rescue
       nil
     end
