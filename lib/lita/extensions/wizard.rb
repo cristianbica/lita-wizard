@@ -2,7 +2,6 @@ module Lita
   module Extensions
     class Wizard
       def self.call(payload)
-        Lita.logger.debug "LEW: #{payload.inspect}"
         message = payload[:message]
         route = payload[:route]
         robot = payload[:robot]
