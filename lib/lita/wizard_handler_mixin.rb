@@ -1,7 +1,7 @@
 module Lita
   module WizardHandlerMixin
     def start_wizard(klass, message, meta = {})
-      klass.start(robot, message, meta = {})
+      klass.start(robot, message, meta)
     end
   end
 

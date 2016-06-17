@@ -18,8 +18,8 @@ class Lita::Wizard
     self.current_step_index += 1
     save
     if final_step?
-      send_message final_message
       finish_wizard
+      send_message final_message
       destroy
     elsif run_current_step?
       send_message initial_message if current_step_index == 0
@@ -156,7 +156,7 @@ class Lita::Wizard
       false
     end
 
-    def restore(message)
+    def restore(robot, message)
       data = MultiJson.load(Lita.redis["pending-wizard-#{message.user.id.downcase}"])
       klass = data['class'].safe_constantize
       klass.new(robot, message, data)
