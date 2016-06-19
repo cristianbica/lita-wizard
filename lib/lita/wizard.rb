@@ -22,7 +22,10 @@ class Lita::Wizard
       send_message final_message
       destroy
     elsif run_current_step?
-      send_message initial_message if current_step_index == 0
+      if first_step?
+        start_wizard
+        send_message initial_message
+      end
       message = step[:label]
       message =  "#{message} (Write done when finished)" if step[:multiline]
       send_message message
@@ -98,6 +101,10 @@ class Lita::Wizard
     current_step_index == steps.size
   end
 
+  def first_step?
+    current_step_index == 0
+  end
+
   def value_for(step_name)
     values[step_index(step_name)]
   end
@@ -125,6 +132,9 @@ class Lita::Wizard
 
   def final_message
     "You're done!"
+  end
+
+  def start_wizard
   end
 
   def abort_wizard
