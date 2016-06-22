@@ -3,9 +3,9 @@ Gem::Specification.new do |spec|
   spec.version       = "1.0.0"
   spec.authors       = ["Cristian Bica"]
   spec.email         = ["cristian.bica@gmail.com"]
-  spec.description   = "Chat wizards"
-  spec.summary       = "Chat wizards"
-  spec.homepage      = "https://"
+  spec.description   = "A lita extension to build wizards"
+  spec.summary       = "A lita extension to build wizards (surveys, standups, etc)"
+  spec.homepage      = "https://github.com/cristianbica/lita-wizard"
   spec.license       = "MIT"
   spec.metadata      = { "lita_plugin_type" => "extension" }
 

@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/cristianbica/lita-wizard.png?branch=master)](https://travis-ci.org/cristianbica/lita-wizard)
 [![Coverage Status](https://coveralls.io/repos/cristianbica/lita-wizard/badge.png)](https://coveralls.io/r/cristianbica/lita-wizard)
 
-TODO: Add a description of the plugin.
+A lita extension to build wizards (surveys, standups, etc). You can instruct your chat bot to ask several questions, validate responses.
 
 ## Installation
 
@@ -15,4 +15,70 @@ spec.add_runtime_dependency "lita-wizard"
 
 ## Usage
 
-TODO: Describe the plugin's features and how to use them.
+Create a subclass of `Lita::Wizard`
+
+``` ruby
+class MyWizard
+
+  # provide the wizard steps
+  step :name, label: "What's your name:""
+  step :bio, label: "Tell me something about yourself:", multiline: true
+  step :lang, label: "What's your preferred programming language?", options: %w(ruby php)
+  step :years, label: "For how many years you're a programmer?", validate: /\d+/
+  step :really, label: "Really?", options: %w(yes no), if: ->(wizard) { value_for(:years).to_i > 15 }
+
+  # or you can have dynamic wizard steps
+  def steps
+    # return an array of objects responding to the following methods:
+    # name: a string / symbol
+    # lable: a string
+    # multiline: boolean
+    # (optional) validate: regexp
+    # (optional) options: array
+    # (optional) if: a proc
+  end
+
+  # you can override the following methods to customize the messages
+
+  def initial_message
+    "Great! I'm going to ask you some questions. During this time I cannot take regular commands. " \
+    "You can abort at any time by writing abort"
+  end
+
+  def abort_message
+    "Aborting. Resume your normal operations"
+  end
+
+  def final_message
+    "You're done!"
+  end
+
+  # You can implement the following methods to customize the wizard behaviour.
+  # The wizard has an instance method `meta` which contains some data you
+  # set when starting the wizard
+
+  def start_wizard
+  end
+
+  def abort_wizard
+  end
+
+  def finish_wizard
+  end
+
+end
+```
+
+In your handler call `start_wizard` to initialize the process
+
+
+``` ruby
+route(/^some command$/, :a_callback
+
+def a_callback(request)
+  start_wizard(Mywizard, request.message, some_data: 1, other_data: 2)
+end
+```
+
+
+
