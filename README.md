@@ -21,13 +21,14 @@ Create a subclass of `Lita::Wizard`
 class MyWizard
 
   # provide the wizard steps
-  step :name, label: "What's your name:""
+  step :name, label: "Your name:"
   step :bio, label: "Tell me something about yourself:", multiline: true
   step :lang, label: "What's your preferred programming language?", options: %w(ruby php)
   step :years, label: "For how many years you're a programmer?", validate: /\d+/
   step :really, label: "Really?", options: %w(yes no), if: ->(wizard) { value_for(:years).to_i > 15 }
 
   # or you can have dynamic wizard steps
+  
   def steps
     # return an array of objects responding to the following methods:
     # name: a string / symbol
@@ -73,7 +74,7 @@ In your handler call `start_wizard` to initialize the process
 
 
 ``` ruby
-route(/^some command$/, :a_callback
+route /^some command$/, :a_callback
 
 def a_callback(request)
   start_wizard(Mywizard, request.message, some_data: 1, other_data: 2)
