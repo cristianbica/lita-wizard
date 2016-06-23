@@ -82,6 +82,15 @@ describe Lita::Wizard, lita: true do
     end
   end
 
+  context "deleting a wizard" do
+    it "should delete a wizard" do
+      Lita.redis["pending-wizard-42"] = "1"
+      expect(Lita::Wizard.pending_wizard?("42")).to be_truthy
+      Lita::Wizard.cancel_wizard("42")
+      expect(Lita::Wizard.pending_wizard?("42")).to be_falsey
+    end
+  end
+
   context "accessing answers" do
     it "should be able to get a specific answer" do
       data = { class: "TestWizard", values: %w(a b c d) }

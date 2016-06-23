@@ -182,6 +182,10 @@ class Lita::Wizard
       Lita.redis["pending-wizard-#{user_id.downcase}"]
     end
 
+    def cancel_wizard(user_id)
+      Lita.redis.del "pending-wizard-#{user_id.downcase}"
+    end
+
     def step(name, options = {})
       steps << OpenStruct.new(options.merge(name: name))
     end
