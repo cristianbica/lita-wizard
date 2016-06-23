@@ -24,15 +24,15 @@ class TestWizard < Lita::Wizard
        options: %w(one two)
 
   def initial_message
-    "initial message"
+    "initial message" << super
   end
 
   def abort_message
-    "abort message"
+    "abort message" << super
   end
 
   def final_message
-    "final message"
+    "final message" << super
   end
 
 end

@@ -19,7 +19,7 @@ describe Lita::Handlers::Wizard, lita: true, lita_handler: true do
   it "should reply with the initial message if it's the first step" do
     message = Lita::Message.new(robot, "test", source)
     TestWizard.start(robot, message)
-    expect(replies.first).to eq("initial message")
+    expect(replies.first).to match(/^initial message/)
   end
 
   it "should call the start_wizard method if it's the first step" do
@@ -101,7 +101,6 @@ describe Lita::Handlers::Wizard, lita: true, lita_handler: true do
   it "should abort the wizard if requested by the user" do
     store_wizard(current_step_index: 0)
     send_message("abort", privately: true)
-    puts replies.inspect
     expect(Lita::Wizard.pending_wizard?("1")).to be_falsey
   end
 
@@ -117,6 +116,11 @@ describe Lita::Handlers::Wizard, lita: true, lita_handler: true do
     send_message("abort", privately: true)
   end
 
-
+  it "should abort the wizard if it cannot identify the current step" do
+    expect_any_instance_of(TestWizard).to receive(:destroy)
+    store_wizard(current_step_index: 42)
+    send_message("one", privately: true)
+    expect(replies.last).to match /Some error occured. Aborting/
+  end
 
 end
