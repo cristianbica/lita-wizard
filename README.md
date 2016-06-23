@@ -1,7 +1,7 @@
 # lita-wizard
 
 [![Build Status](https://travis-ci.org/cristianbica/lita-wizard.png?branch=master)](https://travis-ci.org/cristianbica/lita-wizard)
-[![Coverage Status](https://coveralls.io/repos/cristianbica/lita-wizard/badge.png)](https://coveralls.io/r/cristianbica/lita-wizard)
+[![Coverage Status](https://coveralls.io/repos/github/cristianbica/lita-wizard/badge.svg?branch=master)](https://coveralls.io/github/cristianbica/lita-wizard?branch=master)
 
 A lita extension to build wizards (surveys, standups, etc). You can instruct your chat bot to ask several questions, validate responses.
 
