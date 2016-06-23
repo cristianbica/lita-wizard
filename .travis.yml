@@ -6,3 +6,5 @@ before_install:
   - gem update --system
 services:
   - redis-server
+notifications:
+  email: false
