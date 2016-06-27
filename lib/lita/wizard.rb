@@ -165,9 +165,11 @@ class Lita::Wizard
       wizard = restore(robot, message)
       if wizard
         wizard.handle_message
-        return true
+        true
+      else
+        cancel_wizard(message.user.id)
+        false
       end
-      false
     end
 
     def restore(robot, message)

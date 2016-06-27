@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "lita-wizard"
-  spec.version       = "1.0.1"
+  spec.version       = "1.0.2"
   spec.authors       = ["Cristian Bica"]
   spec.email         = ["cristian.bica@gmail.com"]
   spec.description   = "A lita extension to build wizards"
