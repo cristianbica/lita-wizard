@@ -148,7 +148,8 @@ class Lita::Wizard
   end
 
   def send_message(body)
-    message.reply body
+    # Wizard must run in a private chat versus a room
+    message.reply_privately body
   end
 
   class << self
