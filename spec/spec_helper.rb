@@ -8,6 +8,7 @@ SimpleCov.start { add_filter "/spec/" }
 
 require "lita-wizard"
 require "lita/rspec"
+require "pry"
 
 Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each {|f| require f }
 

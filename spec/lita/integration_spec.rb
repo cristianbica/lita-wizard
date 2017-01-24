@@ -22,6 +22,12 @@ describe Lita::Handlers::Wizard, lita: true, lita_handler: true do
     expect(replies.first).to match(/^initial message/)
   end
 
+  it "should reply with the initial message privately" do
+    message = Lita::Message.new(robot, "test", source)
+    expect(message).to receive(:reply_privately).at_least(1)
+    TestWizard.start(robot, message)
+  end
+
   it "should call the start_wizard method if it's the first step" do
     message = Lita::Message.new(robot, "test", source)
     expect_any_instance_of(TestWizard).to receive(:start_wizard)
